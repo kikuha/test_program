@@ -33,7 +33,7 @@ public class BT_test extends Activity implements Runnable,View.OnClickListener{
     private BluetoothDevice mDevice;
     /* Bluetooth UUID */
     private final UUID MY_UUID = UUID.fromString("00001101-0000-1000-8000-00805F9B34FB");
-    private final String DEVICE_NAME = "Galaxy S7 edge";
+    private final String DEVICE_NAME = "SBDBT-001bdc068047";
     private BluetoothSocket mSocket;
     private Thread mThread;
     private boolean isRunning;
@@ -109,8 +109,9 @@ public class BT_test extends Activity implements Runnable,View.OnClickListener{
             mHandler.sendMessage(valueMsg);
 
             try{
+
                 // 取得したデバイス名を使ってBluetoothでSocket接続
-                mSocket = mDevice.createRfcommSocketToServiceRecord(
+                mSocket = mDevice.createInsecureRfcommSocketToServiceRecord(
                       UUID.fromString("00001101-0000-1000-8000-00805F9B34FB"));
 //                mSocket = mDevice.createRfcommSocketToServiceRecord(MY_UUID);
 //                mSocket = mDevice.createInsecureRfcommSocketToServiceRecord(MY_UUID);
