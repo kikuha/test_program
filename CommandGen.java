@@ -134,12 +134,24 @@ public class CommandGen extends Service{
     public void UpdateData(double[] input){
         if(flag_BLE == 0){
             flag_BLE = 1;
+
+            /////////////////////////////////////////////////////////////////////
+            /////////////////////////////////////////////////////////////////////
             for(int i = 0; i<Const.nOfDimensions;i++){
                 InputData[i][RingBufCnt_Input%Const.RingDataNum] = input[i];
             }
+            ////////////////////////////////////////////////////////////////////
+            InputData[0][RingBufCnt_Input%Const.RingDataNum] = input[0];
+            InputData[1][RingBufCnt_Input%Const.RingDataNum] = input[1];
+            InputData[2][RingBufCnt_Input%Const.RingDataNum] = input[2];
+            ////////////////////////////////////////////////////////////////////
+            ///////////////////////////////////////////////////////////////////
+
             RingBufCnt_Input++;
             flag_BLE = 0;
 
+            ///////////////////////////////////////////////////////////////////
+            ///////////////////////////////////////////////////////////////////
             for(int i = 0;i<Const.nOfMoveTypes;i++) {
                 double RsTmpAve = 0;
                 for (int j = 0; j < Const.nOfDimensions; j++) {
@@ -151,6 +163,33 @@ public class CommandGen extends Service{
                 }
                 RsMean[i][RingBufCnt_RsMean%Const.RingDataNum] = RsTmpAve / Const.dataScale;
             }
+            /////////////////////////////////////////////////////////////////
+            double[] RsTmpAve = {0,0,0,0};
+
+            for(int i=0; i<Const.dataProcNum;i++){
+                RsTmpAve[0] = RsTmpAve[0] + InputData[0][((RingBufCnt_Input - Const.dataProcNum - 1 + i) % Const.RingDataNum)] * Const.refSignalData[0][0][i]
+                        +InputData[1][((RingBufCnt_Input - Const.dataProcNum - 1 + i) % Const.RingDataNum)] * Const.refSignalData[0][1][i]
+                        +InputData[2][((RingBufCnt_Input - Const.dataProcNum - 1 + i) % Const.RingDataNum)] * Const.refSignalData[0][2][i];
+
+                RsTmpAve[1] = RsTmpAve[1] + InputData[0][((RingBufCnt_Input - Const.dataProcNum - 1 + i) % Const.RingDataNum)] * Const.refSignalData[1][0][i]
+                        +InputData[1][((RingBufCnt_Input - Const.dataProcNum - 1 + i) % Const.RingDataNum)] * Const.refSignalData[1][1][i]
+                        +InputData[2][((RingBufCnt_Input - Const.dataProcNum - 1 + i) % Const.RingDataNum)] * Const.refSignalData[1][2][i];
+
+                RsTmpAve[2] = RsTmpAve[2] + InputData[0][((RingBufCnt_Input - Const.dataProcNum - 1 + i) % Const.RingDataNum)] * Const.refSignalData[2][0][i]
+                        +InputData[1][((RingBufCnt_Input - Const.dataProcNum - 1 + i) % Const.RingDataNum)] * Const.refSignalData[2][1][i]
+                        +InputData[2][((RingBufCnt_Input - Const.dataProcNum - 1 + i) % Const.RingDataNum)] * Const.refSignalData[2][2][i];
+
+                RsTmpAve[3] = RsTmpAve[3] + InputData[0][((RingBufCnt_Input - Const.dataProcNum - 1 + i) % Const.RingDataNum)] * Const.refSignalData[3][0][i]
+                        +InputData[1][((RingBufCnt_Input - Const.dataProcNum - 1 + i) % Const.RingDataNum)] * Const.refSignalData[3][1][i]
+                        +InputData[2][((RingBufCnt_Input - Const.dataProcNum - 1 + i) % Const.RingDataNum)] * Const.refSignalData[3][2][i];
+            }
+            RsMean[0][RingBufCnt_RsMean%Const.RingDataNum] = RsTmpAve[0] / Const.dataScale;
+            RsMean[1][RingBufCnt_RsMean%Const.RingDataNum] = RsTmpAve[1] / Const.dataScale;
+            RsMean[2][RingBufCnt_RsMean%Const.RingDataNum] = RsTmpAve[2] / Const.dataScale;
+            RsMean[3][RingBufCnt_RsMean%Const.RingDataNum] = RsTmpAve[3] / Const.dataScale;
+            //////////////////////////////////////////////////////////////////////////////////////
+            /////////////////////////////////////////////////////////////////////////////////////
+
             RingBufCnt_RsMean++;
         }
     }
@@ -160,7 +199,6 @@ public class CommandGen extends Service{
         int Cnt = RingBufCnt_Input - Const.dataProcNum-1;
 
         ////////省略//////
-        i("ComGen_Main","(ry, run");
         return Move;
     }
 
